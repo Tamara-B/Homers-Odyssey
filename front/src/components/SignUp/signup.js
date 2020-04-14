@@ -7,18 +7,30 @@ class SignUp extends Component {
       email: "",
       password: "",
       passwordConf: "",
-      firstname: "",
-      lastname: ""
+      name: "",
+      lastname: "",
+      flash: "",
     };
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    console.log(JSON.stringify(this.state, 1, 1));
+    /*     console.log(JSON.stringify(this.state, 1, 1)); */
     if (this.state.password !== this.state.passwordConf) {
       alert("Passwords aren't the same!");
     } else {
-      alert("Confirmation e-mail sent to: " + this.state.email);
+      fetch("/auth/signup", {
+        method: "POST",
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(this.state),
+      })
+        .then((res) => res.json())
+        .then(
+          (res) => this.setState({ flash: res.flash }),
+          (err) => this.setState({ flash: err.flash })
+        );
     }
   }
 
@@ -31,7 +43,7 @@ class SignUp extends Component {
           name="email"
           placeholder="name@email.hu"
           value={this.state.email}
-          onChange={event => this.setState({ email: event.target.value })}
+          onChange={(event) => this.setState({ email: event.target.value })}
         />
         <br />
         <input
@@ -39,7 +51,7 @@ class SignUp extends Component {
           name="password"
           value={this.state.password}
           placeholder="password"
-          onChange={event => this.setState({ password: event.target.value })}
+          onChange={(event) => this.setState({ password: event.target.value })}
         ></input>
         <br />
         <input
@@ -47,17 +59,17 @@ class SignUp extends Component {
           name="passwordConf"
           value={this.state.passwordConf}
           placeholder="Confirm password"
-          onChange={event =>
+          onChange={(event) =>
             this.setState({ passwordConf: event.target.value })
           }
         ></input>
         <br />
         <input
           type="text"
-          name="firstname"
-          value={this.state.firstname}
+          name="name"
+          value={this.state.name}
           placeholder="First name"
-          onChange={event => this.setState({ firstname: event.target.value })}
+          onChange={(event) => this.setState({ name: event.target.value })}
         ></input>
         <br />
         <input
@@ -65,7 +77,7 @@ class SignUp extends Component {
           name="lastname"
           value={this.state.lastname}
           placeholder="Last name"
-          onChange={event => this.setState({ lastname: event.target.value })}
+          onChange={(event) => this.setState({ lastname: event.target.value })}
         ></input>
         <br />
         <input type="submit" value="Submit" />
